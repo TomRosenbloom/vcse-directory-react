@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
+import "./App.css";
 
 function App() {
   const [organisations, setOrganisations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [newOrg, setNewOrg] = useState({
     name: "",
     category: "",
@@ -44,12 +46,13 @@ function App() {
       const savedOrg = await response.json();
       setOrganisations([...organisations, savedOrg]);
       
-      // Reset form
+      // Reset form and close modal
       setNewOrg({
         name: "",
         category: "",
         contacts: [{ name: "", role: "", email: "" }]
       });
+      setIsModalOpen(false);
     } catch (error) {
       console.error("Error saving organisation:", error);
       setError(error.message);
@@ -69,90 +72,138 @@ function App() {
     setNewOrg({ ...newOrg, contacts: newContacts });
   };
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+  if (loading) return <div className="loading">Loading...</div>;
+  if (error) return <div className="error">Error: {error}</div>;
 
   return (
-    <div>
-      <h1>Organisations</h1>
-      
-      {/* Add Organisation Form */}
-      <form onSubmit={handleSubmit}>
-        <h2>Add New Organisation</h2>
-        <div>
-          <label>
-            Name:
-            <input
-              type="text"
-              name="name"
-              value={newOrg.name}
-              onChange={handleChange}
-              required
-            />
-          </label>
-        </div>
-        <div>
-          <label>
-            Category:
-            <input
-              type="text"
-              name="category"
-              value={newOrg.category}
-              onChange={handleChange}
-            />
-          </label>
-        </div>
-        
-        {/* Contact Fields */}
-        <h3>Primary Contact</h3>
-        <div>
-          <label>
-            Contact Name:
-            <input
-              type="text"
-              value={newOrg.contacts[0].name}
-              onChange={(e) => handleContactChange(0, "name", e.target.value)}
-            />
-          </label>
-        </div>
-        <div>
-          <label>
-            Contact Role:
-            <input
-              type="text"
-              value={newOrg.contacts[0].role}
-              onChange={(e) => handleContactChange(0, "role", e.target.value)}
-            />
-          </label>
-        </div>
-        <div>
-          <label>
-            Contact Email:
-            <input
-              type="email"
-              value={newOrg.contacts[0].email}
-              onChange={(e) => handleContactChange(0, "email", e.target.value)}
-            />
-          </label>
-        </div>
-        
-        <button type="submit">Add Organisation</button>
-      </form>
+    <div className="container">
+      <div className="header">
+        <h1>Organisations</h1>
+        <button className="add-button" onClick={() => setIsModalOpen(true)}>
+          Add New Organisation
+        </button>
+      </div>
 
       {/* Organisations List */}
-      <h2>Existing Organisations</h2>
-      <ul>
+      <div className="organisations-list">
         {organisations.map((org) => (
-          <li key={org._id}>
-            {org.name} ({org.category})
-            {org.contacts && org.contacts.length > 0 && (
-              <div>
-                Contact: {org.contacts[0].name} - {org.contacts[0].email}
+          <div key={org._id} className="org-item">
+            <h2 className="org-title">{org.name}</h2>
+            
+            <div className="org-section">
+              <h3 className="section-title">Categories</h3>
+              <div className="section-content">
+                {org.category || 'No categories assigned'}
               </div>
-            )}
-          </li>
+            </div>
+
+            <div className="org-section">
+              <h3 className="section-title">Contacts</h3>
+              {org.contacts && org.contacts.length > 0 ? (
+                <div className="contact-details">
+                  <div className="contact-field">
+                    <span className="field-label">Name:</span>
+                    <span className="field-value">{org.contacts[0].name || 'N/A'}</span>
+                  </div>
+                  <div className="contact-field">
+                    <span className="field-label">Role:</span>
+                    <span className="field-value">{org.contacts[0].role || 'N/A'}</span>
+                  </div>
+                  <div className="contact-field">
+                    <span className="field-label">Email:</span>
+                    <span className="field-value">{org.contacts[0].email || 'N/A'}</span>
+                  </div>
+                </div>
+              ) : (
+                <div className="section-content">No contacts added</div>
+              )}
+            </div>
+          </div>
         ))}
-      </ul>
+      </div>
+
+      {/* Modal */}
+      {isModalOpen && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <div className="modal-header">
+              <h2>Add New Organisation</h2>
+              <button 
+                className="close-button"
+                onClick={() => setIsModalOpen(false)}
+              >
+                ×
+              </button>
+            </div>
+            <form onSubmit={handleSubmit}>
+              <div className="form-group">
+                <label>
+                  Name:
+                  <input
+                    type="text"
+                    name="name"
+                    value={newOrg.name}
+                    onChange={handleChange}
+                    required
+                  />
+                </label>
+              </div>
+              <div className="form-group">
+                <label>
+                  Category:
+                  <input
+                    type="text"
+                    name="category"
+                    value={newOrg.category}
+                    onChange={handleChange}
+                  />
+                </label>
+              </div>
+              
+              <h3>Primary Contact</h3>
+              <div className="form-group">
+                <label>
+                  Contact Name:
+                  <input
+                    type="text"
+                    value={newOrg.contacts[0].name}
+                    onChange={(e) => handleContactChange(0, "name", e.target.value)}
+                  />
+                </label>
+              </div>
+              <div className="form-group">
+                <label>
+                  Contact Role:
+                  <input
+                    type="text"
+                    value={newOrg.contacts[0].role}
+                    onChange={(e) => handleContactChange(0, "role", e.target.value)}
+                  />
+                </label>
+              </div>
+              <div className="form-group">
+                <label>
+                  Contact Email:
+                  <input
+                    type="email"
+                    value={newOrg.contacts[0].email}
+                    onChange={(e) => handleContactChange(0, "email", e.target.value)}
+                  />
+                </label>
+              </div>
+              
+              <div className="modal-footer">
+                <button type="button" onClick={() => setIsModalOpen(false)}>
+                  Cancel
+                </button>
+                <button type="submit" className="primary">
+                  Add Organisation
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
