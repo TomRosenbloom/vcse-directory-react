@@ -137,59 +137,49 @@ function App() {
             </div>
             <form onSubmit={handleSubmit}>
               <div className="form-group">
-                <label>
-                  Name:
-                  <input
-                    type="text"
-                    name="name"
-                    value={newOrg.name}
-                    onChange={handleChange}
-                    required
-                  />
-                </label>
+                <label>Name:</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={newOrg.name}
+                  onChange={handleChange}
+                  required
+                />
               </div>
               <div className="form-group">
-                <label>
-                  Category:
-                  <input
-                    type="text"
-                    name="category"
-                    value={newOrg.category}
-                    onChange={handleChange}
-                  />
-                </label>
+                <label>Category:</label>
+                <input
+                  type="text"
+                  name="category"
+                  value={newOrg.category}
+                  onChange={handleChange}
+                />
               </div>
               
               <h3>Primary Contact</h3>
               <div className="form-group">
-                <label>
-                  Contact Name:
-                  <input
-                    type="text"
-                    value={newOrg.contacts[0].name}
-                    onChange={(e) => handleContactChange(0, "name", e.target.value)}
-                  />
-                </label>
+                <label>Contact Name:</label>
+                <input
+                  type="text"
+                  value={newOrg.contacts[0].name}
+                  onChange={(e) => handleContactChange(0, "name", e.target.value)}
+                />
               </div>
               <div className="form-group">
-                <label>
-                  Contact Role:
-                  <input
-                    type="text"
-                    value={newOrg.contacts[0].role}
-                    onChange={(e) => handleContactChange(0, "role", e.target.value)}
-                  />
-                </label>
+                <label>Contact Role:</label>
+                <input
+                  type="text"
+                  value={newOrg.contacts[0].role}
+                  onChange={(e) => handleContactChange(0, "role", e.target.value)}
+                />
               </div>
               <div className="form-group">
-                <label>
-                  Contact Email:
-                  <input
-                    type="email"
-                    value={newOrg.contacts[0].email}
-                    onChange={(e) => handleContactChange(0, "email", e.target.value)}
-                  />
-                </label>
+                <label>Contact Email:</label>
+                <input
+                  type="email"
+                  value={newOrg.contacts[0].email}
+                  onChange={(e) => handleContactChange(0, "email", e.target.value)}
+                />
               </div>
               
               <div className="modal-footer">
